@@ -11,9 +11,7 @@ export default function useCamera() {
       setError(null);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'user',
-          width: { ideal: 640 },
-          height: { ideal: 480 },
+          facingMode: 'user'
         },
         audio: false,
       });
@@ -22,7 +20,13 @@ export default function useCamera() {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current.play();
+          } catch (e) {
+            console.warn('Auto-play caught on mobile:', e);
+          }
+        };
       }
 
       setIsActive(true);
