@@ -17,6 +17,19 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/admin/login', [AuthController::class, 'adminLogin']);
 
+Route::get('/setup-admin', function () {
+    \App\Models\User::updateOrCreate(
+        ['nim' => 'admin'],
+        [
+            'nama' => 'Admin KKN',
+            'jurusan' => 'Admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+            'role' => 'admin',
+        ]
+    );
+    return response()->json(['message' => 'Admin user created successfully!']);
+});
+
 // Authenticated routes (peserta + admin)
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
