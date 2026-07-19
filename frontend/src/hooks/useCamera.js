@@ -1,0 +1,94 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
+
+export default function useCamera() {
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [isActive, setIsActive] = useState(false);
+  const [error, setError] = useState(null);
+
+  const startCamera = useCallback(async () => {
+    try {
+      setError(null);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'user',
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+        },
+        audio: false,
+      });
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+
+      setIsActive(true);
+    } catch (err) {
+      console.error('Camera error:', err);
+      if (err.name === 'NotAllowedError') {
+        setError('Akses kamera ditolak. Harap izinkan akses kamera di pengaturan browser.');
+      } else if (err.name === 'NotFoundError') {
+        setError('Kamera tidak ditemukan. Pastikan perangkat memiliki kamera.');
+      } else {
+        setError('Gagal mengakses kamera: ' + err.message);
+      }
+    }
+  }, []);
+
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsActive(false);
+  }, []);
+
+  const captureFrame = useCallback(() => {
+    if (!videoRef.current || !isActive) return null;
+
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    // Mirror horizontally for selfie camera
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0);
+    return canvas;
+  }, [isActive]);
+
+  const captureBase64 = useCallback(
+    (quality = 0.85) => {
+      const canvas = captureFrame();
+      if (!canvas) return null;
+      return canvas.toDataURL('image/jpeg', quality);
+    },
+    [captureFrame]
+  );
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  return {
+    videoRef,
+    isActive,
+    error,
+    startCamera,
+    stopCamera,
+    captureFrame,
+    captureBase64,
+  };
+}
