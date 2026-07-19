@@ -82,7 +82,13 @@ export default function RegisterPage() {
       navigate('/login', { state: { message: 'Registrasi berhasil! Silakan login.' } });
     } catch (err) {
       console.error(err);
-      let msg = err.response?.data?.message || 'Registrasi gagal. Periksa kembali data Anda.';
+      let msg = err.response?.data?.message || `Error: ${err.message}. ${err.response?.status ? 'Status: ' + err.response.status : ''}`;
+      
+      // If there's an HTML response or something weird, capture it
+      if (err.response?.data && typeof err.response.data === 'string') {
+        msg += ` | Data: ${err.response.data.substring(0, 50)}...`;
+      }
+
       const valErrors = err.response?.data?.data;
       if (valErrors && typeof valErrors === 'object') {
         const firstError = Object.values(valErrors)[0];
