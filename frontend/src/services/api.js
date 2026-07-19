@@ -1,16 +1,10 @@
 import axios from 'axios';
 
-// Auto-fix common URL mistakes (http instead of https, or trailing slashes)
-let baseUrl = import.meta.env.VITE_API_URL || '/api';
-if (baseUrl.startsWith('http://') && !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')) {
-  baseUrl = baseUrl.replace('http://', 'https://');
-}
-if (baseUrl.endsWith('/')) {
-  baseUrl = baseUrl.slice(0, -1); // Remove trailing slash to prevent /api//register 301 redirects
-}
+// Hardcode backend URL to prevent Vercel environment variable issues
+const RAILWAY_URL = 'https://absen-kkn-production.up.railway.app/api';
 
 const api = axios.create({
-  baseURL: baseUrl,
+  baseURL: RAILWAY_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
