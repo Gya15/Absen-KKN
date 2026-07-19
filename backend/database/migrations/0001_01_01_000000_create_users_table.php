@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nim')->unique();
             $table->string('jurusan');
             $table->string('password');
-            $table->string('foto_registrasi')->nullable();
+            $table->longText('foto_registrasi')->nullable();
             $table->binary('face_embedding')->nullable();
             $table->string('role')->default('peserta');
             $table->timestamps();

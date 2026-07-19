@@ -37,23 +37,17 @@ class AuthController extends Controller
                 'face_embedding.size' => 'Face embedding harus berisi 128 nilai.',
             ]);
 
-            // Decode and save base64 photo
+            // Save base64 photo directly to database to avoid ephemeral disk loss
             $fotoPath = null;
             if ($request->foto_registrasi) {
-                // Strip the data:image/...;base64, prefix if exists
-                $base64String = preg_replace('#^data:image/\w+;base64,#i', '', $request->foto_registrasi);
-                $imageData = base64_decode($base64String);
+                // Keep the base64 format (with or without data:image prefix)
+                // so it can be served directly via data URI
+                $fotoPath = $request->foto_registrasi;
                 
-                if ($imageData === false) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Format foto tidak valid.',
-                        'data' => null,
-                    ], 422);
+                // Ensure it's a valid data URI or base64
+                if (!str_starts_with($fotoPath, 'data:image')) {
+                    $fotoPath = 'data:image/jpeg;base64,' . $fotoPath;
                 }
-                $filename = 'registrasi/' . uniqid() . '_' . $request->nim . '.jpg';
-                Storage::disk(config('filesystems.default'))->put($filename, $imageData);
-                $fotoPath = $filename;
             }
 
             // Create user
