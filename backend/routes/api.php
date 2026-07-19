@@ -30,6 +30,21 @@ Route::get('/setup-admin', function () {
     return response()->json(['message' => 'Admin user created successfully!']);
 });
 
+// Route to serve images from local disk if S3 is not used
+Route::get('/images/{path}', function ($path) {
+    // Basic security check to prevent directory traversal
+    $path = str_replace(['..', '/', '\\'], '', $path);
+    $fullPath = 'registrasi/' . $path;
+    
+    if (\Illuminate\Support\Facades\Storage::disk('local')->exists($fullPath)) {
+        $file = \Illuminate\Support\Facades\Storage::disk('local')->get($fullPath);
+        $type = \Illuminate\Support\Facades\Storage::disk('local')->mimeType($fullPath);
+        return response($file, 200)->header('Content-Type', $type);
+    }
+    
+    abort(404, 'Image not found');
+});
+
 // Authenticated routes (peserta + admin)
 Route::middleware('auth:sanctum')->group(function () {
     // Auth

@@ -91,7 +91,14 @@ class User extends Authenticatable
     public function getFotoUrlAttribute()
     {
         if ($this->foto_registrasi) {
-            return \Illuminate\Support\Facades\Storage::url($this->foto_registrasi);
+            $disk = config('filesystems.default');
+            if ($disk === 's3') {
+                return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->foto_registrasi);
+            } else {
+                // If local disk, route it through our custom image proxy on the backend URL
+                $filename = basename($this->foto_registrasi);
+                return 'https://absen-kkn-production.up.railway.app/api/images/' . $filename;
+            }
         }
         return null;
     }
