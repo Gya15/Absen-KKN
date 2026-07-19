@@ -1,5 +1,10 @@
 <?php
 
+// Railway hack: Always clear config cache on boot to ensure runtime environment variables are used
+if (file_exists(__DIR__.'/cache/config.php')) {
+    @unlink(__DIR__.'/cache/config.php');
+}
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
