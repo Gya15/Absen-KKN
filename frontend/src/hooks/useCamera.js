@@ -20,13 +20,18 @@ export default function useCamera() {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = async () => {
-          try {
-            await videoRef.current.play();
-          } catch (e) {
-            console.warn('Auto-play caught on mobile:', e);
-          }
-        };
+        
+        // Force play immediately and handle promise rejection
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((e) => {
+            console.warn('Auto-play blocked, retrying...', e);
+            // Sometimes it needs a small timeout on mobile
+            setTimeout(() => {
+              videoRef.current?.play().catch(() => {});
+            }, 500);
+          });
+        }
       }
 
       setIsActive(true);
