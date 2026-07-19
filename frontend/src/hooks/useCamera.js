@@ -3,10 +3,14 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 export default function useCamera() {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const isStarting = useRef(false);
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState(null);
 
   const startCamera = useCallback(async () => {
+    if (isStarting.current || streamRef.current) return;
+    isStarting.current = true;
+    
     try {
       setError(null);
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -15,6 +19,12 @@ export default function useCamera() {
         },
         audio: false,
       });
+
+      // If stopCamera was called while we were waiting for permissions:
+      if (!isStarting.current) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
 
       streamRef.current = stream;
 
@@ -44,10 +54,13 @@ export default function useCamera() {
       } else {
         setError('Gagal mengakses kamera: ' + err.message);
       }
+    } finally {
+      isStarting.current = false;
     }
   }, []);
 
   const stopCamera = useCallback(() => {
+    isStarting.current = false; // Cancel any pending starts
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
