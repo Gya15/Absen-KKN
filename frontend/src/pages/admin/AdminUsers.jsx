@@ -74,8 +74,8 @@ const AdminUsers = () => {
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-6 py-4">
-                      {user.foto_registrasi ? (
-                        <img src={`http://localhost:8000/storage/${user.foto_registrasi}`} alt="Foto" className="h-10 w-10 rounded-full object-cover" />
+                      {user.foto_url ? (
+                        <img src={user.foto_url} alt="Foto" className="h-10 w-10 rounded-full object-cover" />
                       ) : (
                         <div className="h-10 w-10 bg-surface-lighter rounded-full flex items-center justify-center text-xs border border-glass-border">NA</div>
                       )}

@@ -51,8 +51,8 @@ class AuthController extends Controller
                         'data' => null,
                     ], 422);
                 }
-                $filename = 'registrasi/' . $validated['nim'] . '.jpg';
-                Storage::disk('public')->put($filename, $imageData);
+                $filename = 'registrasi/' . uniqid() . '_' . $request->nim . '.jpg';
+                Storage::disk(config('filesystems.default'))->put($filename, $imageData);
                 $fotoPath = $filename;
             }
 

@@ -104,8 +104,8 @@ const AdminAttendance = () => {
                 {records.map((record) => (
                   <tr key={record.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-6 py-4">
-                      {record.foto_absen ? (
-                        <img src={`http://localhost:8000/storage/${record.foto_absen}`} alt="Foto Absen" className="h-12 w-12 object-cover rounded shadow-md" />
+                      {record.foto_absen_url ? (
+                        <img src={record.foto_absen_url} alt="Foto Absen" className="h-12 w-12 object-cover rounded shadow-md" />
                       ) : (
                         <div className="h-12 w-12 bg-surface-lighter rounded flex items-center justify-center text-xs">No img</div>
                       )}

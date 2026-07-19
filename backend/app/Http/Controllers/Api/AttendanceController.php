@@ -90,7 +90,7 @@ class AttendanceController extends Controller
                     ], 422);
                 }
                 $filename = 'absensi/' . $user->id . '_' . $today . '.jpg';
-                Storage::disk('public')->put($filename, $imageData);
+                Storage::disk(config('filesystems.default'))->put($filename, $imageData);
                 $fotoPath = $filename;
             }
 

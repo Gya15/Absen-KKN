@@ -13,6 +13,8 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $appends = ['foto_url'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -81,5 +83,16 @@ class User extends Authenticatable
             return null;
         }
         return array_values(unpack('f*', $raw));
+    }
+
+    /**
+     * Get the full URL for the user's registration photo.
+     */
+    public function getFotoUrlAttribute()
+    {
+        if ($this->foto_registrasi) {
+            return \Illuminate\Support\Facades\Storage::url($this->foto_registrasi);
+        }
+        return null;
     }
 }
