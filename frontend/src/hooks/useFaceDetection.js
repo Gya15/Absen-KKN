@@ -51,11 +51,13 @@ export default function useFaceDetection(videoRef, isActive) {
 
   // Detection loop
   const detect = useCallback(() => {
+    const videoElement = videoRef?.current?.video || videoRef?.current;
+    
     if (
       !faceLandmarkerRef.current ||
-      !videoRef?.current ||
+      !videoElement ||
       !isActive ||
-      videoRef.current.readyState < 2
+      videoElement.readyState < 2
     ) {
       animFrameRef.current = requestAnimationFrame(detect);
       return;
@@ -69,7 +71,7 @@ export default function useFaceDetection(videoRef, isActive) {
     lastTimeRef.current = now;
 
     try {
-      const results = faceLandmarkerRef.current.detectForVideo(videoRef.current, now);
+      const results = faceLandmarkerRef.current.detectForVideo(videoElement, now);
 
       if (results.faceLandmarks && results.faceLandmarks.length > 0) {
         setFaceDetected(true);
