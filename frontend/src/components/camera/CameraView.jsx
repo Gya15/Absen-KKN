@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
 export default function CameraView({
@@ -10,6 +10,7 @@ export default function CameraView({
   className = '',
 }) {
   const canvasRef = useRef(null);
+  const [camError, setCamError] = useState(null);
 
   // Draw face detection overlay
   useEffect(() => {
@@ -104,25 +105,35 @@ export default function CameraView({
         screenshotFormat="image/jpeg"
         videoConstraints={{ facingMode: "user" }}
         className="w-full h-full object-cover"
+        onUserMediaError={(err) => {
+          console.error("Webcam error:", err);
+          setCamError(err.message || err.name || "Kamera terkunci oleh sistem");
+        }}
       />
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none"
       />
-      {showGuide && (
+      {showGuide && !camError && (
         <div className={`face-guide ${faceDetected ? 'detected' : ''}`} />
       )}
-      {/* Face status indicator */}
+      {/* Face status indicator or Error */}
       <div className="absolute bottom-3 left-3 right-3 flex justify-center">
-        <div
-          className={`px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-md ${
-            faceDetected
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : 'bg-red-500/20 text-red-300 border border-red-500/30'
-          }`}
-        >
-          {faceDetected ? '✓ Wajah Terdeteksi' : '○ Posisikan Wajah Anda'}
-        </div>
+        {camError ? (
+          <div className="px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-md bg-red-500/20 text-red-300 border border-red-500/30 text-center">
+            Error: {camError}
+          </div>
+        ) : (
+          <div
+            className={`px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-md ${
+              faceDetected
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                : 'bg-red-500/20 text-red-300 border border-red-500/30'
+            }`}
+          >
+            {faceDetected ? '✓ Wajah Terdeteksi' : '○ Posisikan Wajah Anda'}
+          </div>
+        )}
       </div>
     </div>
   );
