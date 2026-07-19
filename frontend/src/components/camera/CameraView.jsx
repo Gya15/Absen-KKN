@@ -101,7 +101,8 @@ export default function CameraView({
         playsInline
         muted
         autoPlay
-        className={`w-full h-full object-cover ${mirrored ? 'scale-x-[-1]' : ''}`}
+        className="w-full h-full object-cover"
+        style={mirrored ? { transform: 'rotateY(180deg)' } : {}}
       />
       <canvas
         ref={canvasRef}
