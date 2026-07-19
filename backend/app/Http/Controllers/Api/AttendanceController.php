@@ -73,7 +73,7 @@ class AttendanceController extends Controller
 
             // Determine status based on time
             $currentTime = Carbon::now('Asia/Jakarta');
-            $status = $currentTime->format('H:i') <= '07:30' ? 'Hadir' : 'Terlambat';
+            $status = $currentTime->format('H:i') <= '08:00' ? 'Hadir' : 'Terlambat';
 
             // Save photo
             $fotoPath = null;

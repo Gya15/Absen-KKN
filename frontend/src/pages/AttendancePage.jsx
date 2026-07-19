@@ -119,7 +119,7 @@ const AttendancePage = () => {
               <ul className="list-disc pl-5 text-sm space-y-1">
                 <li>Pastikan pencahayaan cukup terang</li>
                 <li>Posisikan wajah tepat di tengah kamera</li>
-                <li>Batas waktu absensi Hadir adalah 07:30</li>
+                <li>Batas waktu absensi Hadir adalah 08:00</li>
               </ul>
             </div>
           </div>
