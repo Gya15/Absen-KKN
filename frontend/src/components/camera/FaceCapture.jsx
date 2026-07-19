@@ -149,8 +149,7 @@ export default function FaceCapture({ onCapture, onCancel, autoCapture = false }
         videoRef={videoRef}
         faceDetected={faceDetected}
         landmarks={landmarks}
-        showGuide
-        className="aspect-[3/4] max-h-[500px]"
+        className="w-full max-w-sm mx-auto aspect-[3/4] max-h-[500px]"
       />
 
       {error && (
