@@ -19,6 +19,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Railway Nixpacks hack: Override database config at runtime to bypass poisoned config cache
+        if (env('DATABASE_URL') || env('PGHOST')) {
+            config([
+                'database.default' => 'pgsql',
+            ]);
+            
+            if (env('DATABASE_URL')) {
+                config(['database.connections.pgsql.url' => env('DATABASE_URL')]);
+            }
+            
+            // Explicit PG variables take precedence to avoid parse_url issues
+            if (env('PGHOST')) {
+                config([
+                    'database.connections.pgsql.host' => env('PGHOST'),
+                    'database.connections.pgsql.port' => env('PGPORT', 5432),
+                    'database.connections.pgsql.database' => env('PGDATABASE'),
+                    'database.connections.pgsql.username' => env('PGUSER'),
+                    'database.connections.pgsql.password' => env('PGPASSWORD'),
+                ]);
+            }
+        }
     }
 }
