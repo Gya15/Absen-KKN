@@ -57,14 +57,15 @@ export default function useFaceDetection(videoRef, isActive) {
       !faceLandmarkerRef.current ||
       !videoElement ||
       !isActive ||
-      videoElement.readyState < 2
+      videoElement.readyState < 2 ||
+      videoElement.videoWidth === 0
     ) {
       animFrameRef.current = requestAnimationFrame(detect);
       return;
     }
 
-    const now = performance.now();
-    if (now === lastTimeRef.current) {
+    const now = Math.round(performance.now());
+    if (now <= lastTimeRef.current) {
       animFrameRef.current = requestAnimationFrame(detect);
       return;
     }
@@ -89,8 +90,8 @@ export default function useFaceDetection(videoRef, isActive) {
         setLandmarks(null);
         setBlendshapes(null);
       }
-    } catch {
-      // Sometimes detection fails between frames
+    } catch (err) {
+      console.error('MediaPipe detection error:', err);
     }
 
     animFrameRef.current = requestAnimationFrame(detect);
