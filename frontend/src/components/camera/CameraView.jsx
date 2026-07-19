@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import Webcam from 'react-webcam';
 
 export default function CameraView({
   videoRef,
@@ -13,7 +14,7 @@ export default function CameraView({
   // Draw face detection overlay
   useEffect(() => {
     const canvas = canvasRef.current;
-    const video = videoRef?.current;
+    const video = videoRef?.current?.video || videoRef?.current; // Handle both webcam ref and raw video ref
     if (!canvas || !video) return;
 
     canvas.width = video.videoWidth || 640;
@@ -96,13 +97,13 @@ export default function CameraView({
 
   return (
     <div className={`relative overflow-hidden rounded-2xl bg-black ${className}`}>
-      <video
+      <Webcam
         ref={videoRef}
-        playsInline
-        muted
-        autoPlay
+        audio={false}
+        mirrored={mirrored}
+        screenshotFormat="image/jpeg"
+        videoConstraints={{ facingMode: "user" }}
         className="w-full h-full object-cover"
-        style={mirrored ? { transform: 'rotateY(180deg)' } : {}}
       />
       <canvas
         ref={canvasRef}
