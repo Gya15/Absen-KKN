@@ -47,7 +47,7 @@ class AttendanceController extends Controller
             }
 
             // Get stored face embedding
-            $storedEmbedding = $user->face_embedding_array;
+            $storedEmbedding = $user->face_embedding;
 
             if (empty($storedEmbedding)) {
                 return response()->json([

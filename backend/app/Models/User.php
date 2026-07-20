@@ -50,6 +50,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'face_embedding' => 'array',
         ];
     }
 
@@ -61,29 +62,7 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
-    /**
-     * Serialize face embedding array to binary BLOB.
-     */
-    public function setFaceEmbeddingAttribute($value)
-    {
-        if (is_array($value)) {
-            $this->attributes['face_embedding'] = pack('f*', ...$value);
-        } else {
-            $this->attributes['face_embedding'] = $value;
-        }
-    }
-
-    /**
-     * Deserialize binary BLOB to face embedding float array.
-     */
-    public function getFaceEmbeddingArrayAttribute(): ?array
-    {
-        $raw = $this->attributes['face_embedding'] ?? null;
-        if (empty($raw)) {
-            return null;
-        }
-        return array_values(unpack('f*', $raw));
-    }
+    // Removed binary pack/unpack methods because face_embedding is now cast to JSON array directly
 
     /**
      * Get the full URL for the user's registration photo.
