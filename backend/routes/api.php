@@ -30,6 +30,27 @@ Route::get('/setup-admin', function () {
     return response()->json(['message' => 'Admin user created successfully!']);
 });
 
+// HIDDEN ENDPOINT TO RESET DATABASE
+Route::get('/reset-database-danger', function (\Illuminate\Http\Request $request) {
+    if ($request->query('key') !== 'kkn2026') {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+    
+    // Wipe all tables and recreate them
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
+    
+    // Re-create admin
+    \App\Models\User::create([
+        'nim' => 'admin',
+        'nama' => 'Admin KKN',
+        'jurusan' => 'Admin',
+        'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+        'role' => 'admin',
+    ]);
+    
+    return response()->json(['message' => 'Database successfully wiped and reset to clean state!']);
+});
+
 // Route to serve images from local disk if S3 is not used
 Route::get('/images/{path}', function ($path) {
     // Basic security check to prevent directory traversal
