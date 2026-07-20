@@ -18,15 +18,22 @@ class AppServiceProvider extends ServiceProvider
                 'database.default' => 'pgsql',
             ]);
             
+            $dbUrl = env('DATABASE_URL');
+            $parsedUrl = $dbUrl ? parse_url($dbUrl) : [];
+            
+            $password = env('PGPASSWORD') ?: ($parsedUrl['pass'] ?? null);
+            $username = env('PGUSER') ?: ($parsedUrl['user'] ?? 'postgres');
+            $database = env('PGDATABASE') ?: ltrim($parsedUrl['path'] ?? '/railway', '/');
+            
             // We use the EXACT Public TCP Proxy you showed in the screenshot
             // to 100% bypass the broken internal 'postgres.railway.internal' network
             config([
                 'database.connections.pgsql.url' => null, // Nuke URL so it doesn't override our manual host
                 'database.connections.pgsql.host' => 'tokaido.proxy.rlwy.net',
                 'database.connections.pgsql.port' => 58544,
-                'database.connections.pgsql.database' => env('PGDATABASE', 'railway'),
-                'database.connections.pgsql.username' => env('PGUSER', 'postgres'),
-                'database.connections.pgsql.password' => env('PGPASSWORD'),
+                'database.connections.pgsql.database' => $database,
+                'database.connections.pgsql.username' => $username,
+                'database.connections.pgsql.password' => $password,
             ]);
         }
     }
