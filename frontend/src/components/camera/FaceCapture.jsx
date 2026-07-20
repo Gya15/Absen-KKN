@@ -31,8 +31,8 @@ export default function FaceCapture({ onCapture, onCancel, autoCapture = false }
         throw new Error('Gagal mengambil gambar');
       }
 
-      // Generate face embedding
-      const embedding = await generateEmbedding(imageBase64);
+      // Generate face embedding directly from the live video element to avoid compression/scaling issues
+      const embedding = await generateEmbedding(videoRef.current?.video || imageBase64);
 
       setCaptured({ imageBase64, embedding });
       stopCamera();
