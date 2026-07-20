@@ -94,7 +94,7 @@ export default function LivenessChallenge({ onComplete, onCancel }) {
     );
   }
 
-  const steps = ['FACE_FRONT', 'FACE_RIGHT', 'FACE_LEFT', 'BLINK'];
+  const steps = ['FACE_FRONT', 'FACE_RIGHT', 'FACE_LEFT'];
 
   return (
     <div className="space-y-4">
@@ -156,7 +156,7 @@ export default function LivenessChallenge({ onComplete, onCancel }) {
                   {idx + 1}
                 </div>
               )}
-              <span className="text-[10px] font-medium">{step === 'FACE_FRONT' ? 'Depan' : step === 'FACE_RIGHT' ? 'Kanan' : step === 'FACE_LEFT' ? 'Kiri' : 'Kedip'}</span>
+              <span className="text-[10px] font-medium">{step === 'FACE_FRONT' ? 'Depan' : step === 'FACE_RIGHT' ? 'Kanan' : 'Kiri'}</span>
             </div>
           ))}
         </div>

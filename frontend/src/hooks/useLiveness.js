@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const STEPS = ['FACE_FRONT', 'FACE_RIGHT', 'FACE_LEFT', 'BLINK'];
+const STEPS = ['FACE_FRONT', 'FACE_RIGHT', 'FACE_LEFT'];
 const STEP_TIMEOUT = 15000; // 15 seconds per step
 
 const STEP_INFO = {

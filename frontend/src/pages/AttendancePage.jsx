@@ -111,7 +111,7 @@ const AttendancePage = () => {
           <div className="space-y-4 text-primary-200 mb-8">
             <p>Untuk melakukan absensi, Anda akan melewati 2 tahap verifikasi:</p>
             <ol className="list-decimal pl-5 space-y-2">
-              <li><strong>Liveness Challenge:</strong> Ikuti instruksi gerakan kepala dan kedipan mata untuk memastikan Anda berada di depan kamera.</li>
+              <li><strong>Liveness Challenge:</strong> Ikuti instruksi gerakan kepala untuk memastikan Anda berada di depan kamera.</li>
               <li><strong>Face Recognition:</strong> Sistem akan mencocokkan wajah Anda dengan data saat registrasi.</li>
             </ol>
             <div className="bg-info/10 border border-info/30 p-4 rounded-lg mt-4">
