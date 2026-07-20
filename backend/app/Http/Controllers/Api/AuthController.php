@@ -102,15 +102,15 @@ class AuthController extends Controller
                 'password.required' => 'Password harus diisi.',
             ]);
 
-            if (!Auth::attempt(['nim' => $validated['nim'], 'password' => $validated['password']])) {
+            $user = User::where('nim', $validated['nim'])->first();
+
+            if (!$user || !\Illuminate\Support\Facades\Hash::check($validated['password'], $user->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'NIM atau password salah.',
                     'data' => null,
                 ], 401);
             }
-
-            $user = Auth::user();
 
             // Revoke old tokens
             $user->tokens()->delete();
@@ -155,15 +155,15 @@ class AuthController extends Controller
                 'password.required' => 'Password harus diisi.',
             ]);
 
-            if (!Auth::attempt(['nim' => $validated['nim'], 'password' => $validated['password']])) {
+            $user = User::where('nim', $validated['nim'])->first();
+
+            if (!$user || !\Illuminate\Support\Facades\Hash::check($validated['password'], $user->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Username atau password salah.',
                     'data' => null,
                 ], 401);
             }
-
-            $user = Auth::user();
 
             if ($user->role !== 'admin') {
                 Auth::logout();

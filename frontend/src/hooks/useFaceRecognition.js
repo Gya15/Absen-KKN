@@ -55,8 +55,8 @@ export default function useFaceRecognition() {
         });
       }
 
-      // Lower confidence threshold to 0.3 (default is 0.5) to make it more tolerant
-      const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 });
+      // Lower confidence threshold to 0.1 (default is 0.5) to make it highly tolerant for mobile phones
+      const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 });
       
       const detection = await faceapi
         .detectSingleFace(inputElement, options)
