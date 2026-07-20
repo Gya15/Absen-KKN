@@ -103,8 +103,14 @@ export default function CameraView({
         audio={false}
         mirrored={mirrored}
         screenshotFormat="image/jpeg"
-        videoConstraints={{ facingMode: "user" }}
+        videoConstraints={{ 
+          facingMode: "user",
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        }}
         className="w-full h-full object-cover"
+        playsInline
+        muted
         onUserMediaError={(err) => {
           console.error("Webcam error:", err);
           setCamError(err.message || err.name || "Kamera terkunci oleh sistem");
