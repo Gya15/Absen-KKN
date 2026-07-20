@@ -75,23 +75,15 @@ class AttendanceController extends Controller
             $currentTime = Carbon::now('Asia/Jakarta');
             $status = $currentTime->format('H:i') <= '08:00' ? 'Hadir' : 'Terlambat';
 
-            // Save photo
+            // Save photo base64 directly to database
             $fotoPath = null;
             if ($request->foto_absen) {
-                // Strip the data:image/...;base64, prefix if exists
-                $base64String = preg_replace('#^data:image/\w+;base64,#i', '', $request->foto_absen);
-                $imageData = base64_decode($base64String);
+                $fotoPath = $request->foto_absen;
                 
-                if ($imageData === false) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Format foto tidak valid.',
-                        'data' => null,
-                    ], 422);
+                // Ensure it's a valid data URI
+                if (!str_starts_with($fotoPath, 'data:image')) {
+                    $fotoPath = 'data:image/jpeg;base64,' . $fotoPath;
                 }
-                $filename = 'absensi/' . $user->id . '_' . $today . '.jpg';
-                Storage::disk(config('filesystems.default'))->put($filename, $imageData);
-                $fotoPath = $filename;
             }
 
             // Create attendance record

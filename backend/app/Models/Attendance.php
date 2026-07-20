@@ -41,6 +41,12 @@ class Attendance extends Model
     public function getFotoAbsenUrlAttribute()
     {
         if ($this->foto_absen) {
+            // If it's already a base64 string, return it directly
+            if (str_starts_with($this->foto_absen, 'data:image')) {
+                return $this->foto_absen;
+            }
+            
+            // Backward compatibility for local file paths
             return \Illuminate\Support\Facades\Storage::url($this->foto_absen);
         }
         return null;
