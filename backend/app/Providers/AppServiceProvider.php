@@ -11,15 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
         // Railway Nixpacks hack: Override database config at runtime to bypass poisoned config cache
+        // We do this in register() to ensure it modifies the config BEFORE the DatabaseManager resolves the connection
         if (env('DATABASE_PUBLIC_URL') || env('DATABASE_URL') || env('PGHOST')) {
             config([
                 'database.default' => 'pgsql',
@@ -36,5 +29,13 @@ class AppServiceProvider extends ServiceProvider
                 'database.connections.pgsql.password' => env('PGPASSWORD'),
             ]);
         }
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
     }
 }
