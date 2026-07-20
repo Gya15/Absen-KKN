@@ -25,29 +25,16 @@ class AppServiceProvider extends ServiceProvider
                 'database.default' => 'pgsql',
             ]);
             
-            // Railway internal DNS sometimes fails to resolve postgres.railway.internal.
-            // Using the PUBLIC URL bypasses this issue via the TCP proxy.
-            $url = env('DATABASE_PUBLIC_URL') ?: env('DATABASE_URL');
-            
-            if ($url) {
-                config([
-                    'database.connections.pgsql.url' => $url,
-                    'database.connections.pgsql.host' => null, // Nuke to force url parser
-                    'database.connections.pgsql.port' => null,
-                    'database.connections.pgsql.database' => null,
-                    'database.connections.pgsql.username' => null,
-                    'database.connections.pgsql.password' => null,
-                ]);
-            } else {
-                config([
-                    'database.connections.pgsql.url' => null,
-                    'database.connections.pgsql.host' => env('PGHOST'),
-                    'database.connections.pgsql.port' => env('PGPORT', 5432),
-                    'database.connections.pgsql.database' => env('PGDATABASE'),
-                    'database.connections.pgsql.username' => env('PGUSER'),
-                    'database.connections.pgsql.password' => env('PGPASSWORD'),
-                ]);
-            }
+            // We use the EXACT Public TCP Proxy you showed in the screenshot
+            // to 100% bypass the broken internal 'postgres.railway.internal' network
+            config([
+                'database.connections.pgsql.url' => null, // Nuke URL so it doesn't override our manual host
+                'database.connections.pgsql.host' => 'tokaido.proxy.rlwy.net',
+                'database.connections.pgsql.port' => 58544,
+                'database.connections.pgsql.database' => env('PGDATABASE', 'railway'),
+                'database.connections.pgsql.username' => env('PGUSER', 'postgres'),
+                'database.connections.pgsql.password' => env('PGPASSWORD'),
+            ]);
         }
     }
 }
