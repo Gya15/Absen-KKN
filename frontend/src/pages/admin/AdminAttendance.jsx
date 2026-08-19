@@ -12,6 +12,7 @@ const AdminAttendance = () => {
     tanggal_sampai: new Date().toISOString().split('T')[0],
     search: ''
   });
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     fetchRecords();
@@ -36,6 +37,18 @@ const AdminAttendance = () => {
     fetchRecords();
   };
 
+  const handleExport = async () => {
+    try {
+      setExporting(true);
+      await adminService.exportExcel(filters);
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Gagal mengekspor data absensi.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   // Group records by date
   const groupedRecords = records.reduce((acc, record) => {
     const date = record.tanggal;
@@ -56,6 +69,17 @@ const AdminAttendance = () => {
           <h1 className="text-3xl font-heading text-white mb-2">Rekap Absensi</h1>
           <p className="text-primary-300">Data kehadiran peserta KKN</p>
         </div>
+        <Button 
+          variant="secondary" 
+          onClick={handleExport} 
+          loading={exporting}
+          className="flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export CSV
+        </Button>
       </div>
 
       <Card className="p-6 bg-glass border-glass-border mb-6">
